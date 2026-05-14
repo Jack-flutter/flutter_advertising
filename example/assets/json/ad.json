@@ -1,0 +1,45 @@
+{
+  "same_time": 5,
+  "different_time": 5,
+  "splash_time": 10,
+  "play_count": 3,
+  "play_time": 5,
+  "play_push": 0.5,
+  "native_show_time": 3,
+  "native_show_time_two": 5,
+  "native_push": 0.5,
+  "native_push_two": 0.5,
+  "play_ad_time": 600,
+  "ad_data": {
+    "open": [
+      {
+        "platform": "admob",
+        "weight": 1,
+        "type": "open",
+        "unit_id": "ca-app-pub-3940256099942544/5575463023",
+        "native_id": "",
+        "seconds_type": ""
+      }
+    ],
+    "play": [
+      {
+        "platform": "admob",
+        "weight": 1,
+        "type": "interstitial",
+        "unit_id": "ca-app-pub-3940256099942544/4411468910",
+        "native_id": "",
+        "seconds_type": "seconds"
+      }
+    ],
+    "seconds": [
+      {
+        "platform": "admob",
+        "weight": 1,
+        "type": "native",
+        "unit_id": "ca-app-pub-3940256099942544/3986624511",
+        "native_id": "ca-app-pub-3940256099942544/2521693316",
+        "seconds_type": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,3 @@
+class MockFlutterAdvertisingPlatform {}
+
+void main() {}
