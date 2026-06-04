@@ -75,9 +75,9 @@ class SdkMobile {
         ),
       ).load();
     } else if (data.data.type == AdDataType.banner.value) {
-      final size = await AdSize.getLargeAnchoredAdaptiveBannerAdSize(320);
+      final size = AdSize.getLandscapeInlineAdaptiveBannerAdSize(320);
       BannerAd(
-        size: size!,
+        size: size,
         adUnitId: data.data.unitId,
         listener: BannerAdListener(
           onAdLoaded: _mobileAdSucceed,
