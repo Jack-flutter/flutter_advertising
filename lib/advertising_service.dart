@@ -392,7 +392,7 @@ mixin AdService {
   }
 
   /// 请求广告权限认证
-  static void requestConsentInfoUpdate(Function(bool) completeCall) async {
+  void requestConsentInfoUpdate(Function(bool) completeCall) async {
     try {
       final canRequestAds = await ConsentInformation.instance.canRequestAds();
       if (canRequestAds == true) {
