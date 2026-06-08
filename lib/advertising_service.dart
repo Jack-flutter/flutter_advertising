@@ -15,6 +15,7 @@ mixin AdService {
   late AdConfig adConfig; //广告配置
   final Map<String, int> _timeData = {}; // 广告显示时间记录
   final Map<String, AdCacheState> _cacheData = {}; //广告缓存记录{广告id:广告数据}
+  int _playCount = 0; //广告显示次数
   bool _showAd = false; //广告是否显示
   String? showNativeId; //多原生广告ID
   String _playScene = ''; //广告播放场景
@@ -124,6 +125,7 @@ mixin AdService {
     _playScene = scene;
     _playLocation = location;
     _adExitCall = exitCall;
+    _playCount = playCount;
     reportAdEvent(event: AdEventType.needShow, scene: scene);
     // 找出缓存的广告
     bool isCache = false;
@@ -162,7 +164,7 @@ mixin AdService {
   /// 补偿广告
   void _showSecond({required String scene, required AdCacheState? data}) {
     final location = data?.data.secondsType ?? '';
-    if (location.isEmpty) {
+    if (location.isEmpty || _playCount == 2) {
       // 广告完成通知
       _showAd = false;
       if (_adExitCall != null) _adExitCall!();
