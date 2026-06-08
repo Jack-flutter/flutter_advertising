@@ -163,10 +163,10 @@ mixin AdService {
 
   /// 补偿广告
   void _showSecond({required String scene, required AdCacheState? data}) {
+    _showAd = false;
     final location = data?.data.secondsType ?? '';
     if (location.isEmpty || _playCount == 2) {
       // 广告完成通知
-      _showAd = false;
       if (_adExitCall != null) _adExitCall!();
       return;
     }
