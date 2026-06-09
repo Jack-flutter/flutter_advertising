@@ -23,7 +23,7 @@ mixin AdService {
   AdCacheState? _adData; //当前显示广告的数据记录
   dynamic _fileData; // 播放的视频数据
   Function()? _adExitCall; //广告关闭回调
-  Function(String scene)? adCaacheSucceedCall; //单个广告缓存成功回调
+  Function(Set<String> locations)? adCaacheSucceedCall; //单个广告缓存成功回调
 
   ValueNotifier<bool> adClickNotifier = ValueNotifier(false); //原生广告点击
 
@@ -315,7 +315,7 @@ mixin AdService {
     data.ad = ad;
     _cacheData[adUnitId] = data;
     reportAdEvent(event: AdEventType.reqSuc, scene: data.scene);
-    if (adCaacheSucceedCall != null) adCaacheSucceedCall!(data.scene);
+    if (adCaacheSucceedCall != null) adCaacheSucceedCall!(data.locations);
   }
 
   /// 广告加载失败回调
