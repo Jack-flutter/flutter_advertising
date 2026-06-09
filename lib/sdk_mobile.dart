@@ -12,8 +12,15 @@ class SdkMobile {
 
   SdkMobile({required this.callback, required this.service});
 
-  Future initialize() {
-    return MobileAds.instance.initialize();
+  Future initialize() async {
+    final status = await ConsentInformation.instance.getConsentStatus();
+    final configuration = RequestConfiguration(
+      tagForUnderAgeOfConsent: status != ConsentStatus.obtained
+          ? TagForUnderAgeOfConsent.yes
+          : TagForUnderAgeOfConsent.unspecified,
+    );
+    MobileAds.instance.updateRequestConfiguration(configuration);
+    await MobileAds.instance.initialize();
   }
 
   /// 谷歌谷歌缓存
