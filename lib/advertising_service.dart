@@ -29,6 +29,8 @@ mixin AdService {
 
   bool get adShow => _showAd; //是否显示广告
 
+  String get adLocation => _playLocation; //广告播放位置
+
   /// 广告是否开启
   bool advertisingEnabled();
 
