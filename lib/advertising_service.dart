@@ -28,8 +28,8 @@ mixin AdService {
   ValueNotifier<bool> adClickNotifier = ValueNotifier(false); //原生广告点击
 
   bool get adShow => _showAd; //是否显示广告
-
   String get adLocation => _playLocation; //广告播放位置
+  String get adScene => _playScene; //广告播放场景
 
   /// 广告是否开启
   bool advertisingEnabled();
