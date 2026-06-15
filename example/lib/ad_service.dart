@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advertising/advertising_constant.dart';
-import 'package:flutter_advertising/advertising_data.dart';
 import 'package:flutter_advertising/advertising_service.dart';
 import 'package:flutter_advertising/natives_widget.dart';
 
@@ -60,7 +59,7 @@ class AdTestService with AdService {
   }
 
   @override
-  String nativeAdLocationKey() {
+  String playingAdLocationKey() {
     // TODO: implement nativeAdLocationKey
     return '-';
   }
@@ -72,10 +71,5 @@ class AdTestService with AdService {
     String? code,
   }) {
     // TODO: implement reportAdEvent
-  }
-
-  @override
-  void singAdCacheSucceedNotif(AdCacheState data, AdSdkPlatform type) {
-    // TODO: implement singAdCacheSucceedNotif
   }
 }

@@ -34,8 +34,8 @@ mixin AdService {
   /// 广告是否开启
   bool advertisingEnabled();
 
-  /// 原生广告位置key
-  String nativeAdLocationKey();
+  /// 播放中广告位置key
+  String playingAdLocationKey();
 
   /// 原生广告显示通知
   void adNativesShowNotif(NativesWidget widget);
@@ -98,27 +98,27 @@ mixin AdService {
   }
 
   /// 显示广告
-  bool popAd({
+  void popAd({
     required String scene,
     required String location,
     dynamic videoData,
     int playCount = 1,
     Function()? exitCall,
-  }) {
+  }) async {
     // 是否可显示广告
     if (_showAd == true && advertisingEnabled() == false) {
-      if (exitCall != null) exitCall();
-      return false;
+      exitCall?.call();
+      return;
     }
     // 是否有广告
     if (_obtionAdData(location).isEmpty) {
-      if (exitCall != null) exitCall();
-      return false;
+      exitCall?.call();
+      return;
     }
     // 是否有效期
     if (_adValidPlayInterTime(location, playCount) == false) {
-      if (exitCall != null) exitCall();
-      return false;
+      exitCall?.call();
+      return;
     }
     _adData = null;
     _fileData = videoData;
@@ -136,6 +136,9 @@ mixin AdService {
         break;
       }
     }
+    if (isCache == true && playCount == 2) {
+      await Future.delayed(const Duration(milliseconds: 160));
+    }
     // 按类型显示广告
     if (_adData?.data.platform == AdSdkPlatform.admob.value &&
         isCache == true) {
@@ -144,30 +147,36 @@ mixin AdService {
         isCache == true) {
       _showAd = lovinSdk.showLovinAd(_adData!);
     }
-    if (_showAd == false) {
-      reportAdEvent(
-        event: AdEventType.showFail,
-        scene: scene,
-        code: "No padding",
-      );
-      // 没找到对应的平台或者没有广告-重新走缓存流程
-      _cacheLocationAd(index: 0, location: location, scene: scene);
-      // 看看第二套广告有缓存没
+    if (_showAd == true) return;
+    reportAdEvent(
+      event: AdEventType.showFail,
+      scene: scene,
+      code: "No padding",
+    );
+    // 没找到对应的平台或者没有广告-重新走缓存流程
+    _cacheLocationAd(index: 0, location: location, scene: scene);
+    // 看看第二套广告有缓存没
+    if (playCount == 1) {
       _showSecond(scene: scene, data: _adData);
     } else {
-      // 广告完成通知
-      if (_showAd == false && _adExitCall != null) _adExitCall!();
+      _adExitCall?.call();
     }
-    return _showAd;
   }
 
   /// 补偿广告
   void _showSecond({required String scene, required AdCacheState? data}) {
     _showAd = false;
-    final location = data?.data.secondsType ?? '';
-    if (location.isEmpty || _playCount == 2) {
+    String location = '';
+    if (data?.data.type == AdDataType.rewarded.value) {
+      location = adConfig.secondRv;
+    } else {
+      location = adConfig.second;
+    }
+    if (location.isEmpty ||
+        _playCount == 2 ||
+        _playLocation == playingAdLocationKey()) {
       // 广告完成通知
-      if (_adExitCall != null) _adExitCall!();
+      _adExitCall?.call();
       return;
     }
     popAd(
@@ -191,7 +200,7 @@ mixin AdService {
     }
     int time = 0;
     double open = 0.0;
-    if (_playLocation == nativeAdLocationKey()) {
+    if (_playLocation == playingAdLocationKey()) {
       open = adConfig.playPush;
     } else {
       if (adList.length == 2) {
@@ -216,7 +225,6 @@ mixin AdService {
     for (Ad ad in ads) {
       final AdCacheState? adData = _cacheData[ad.adUnitId];
       final isRep = adData?.locations.isNotEmpty ?? false;
-      if (isRep == false) _cacheData.remove(adData?.data.unitId);
       mobileSdk.nativeMobAdPlayClose(ad: ad, isRep: isRep);
     }
   }
@@ -264,7 +272,6 @@ mixin AdService {
         type: AdDataType.native.value,
         unitId: item.nativeId,
         nativeId: location,
-        secondsType: '',
       );
       adList.add(AdCacheState(data: data, scene: scene));
     }
@@ -288,7 +295,7 @@ mixin AdService {
 
   /// 是否有效播放时间
   bool _adValidPlayInterTime(String location, int playCount) {
-    if (playCount == 2) return true;
+    if (playCount == 2 || location == playingAdLocationKey()) return true;
     final sameInt = _timeData[location] ?? 0; //相同位置上次显示时间
     int differentInt = 0; //不同位置上次显示时间
     for (final item in _timeData.values) {
@@ -369,10 +376,11 @@ mixin AdService {
   }
 
   /// 广告播放关闭响应
-  void _adPalyExitCall(String adUnitId, AdSdkPlatform type) async {
+  void _adPalyExitCall(String adUnitId, AdSdkPlatform type) {
     final adData = _cacheData[adUnitId];
     if (adData != null) {
-      _cacheData.remove(adUnitId);
+      _cacheData.remove(adData.data.unitId);
+      _cacheData.remove(adData.data.nativeId);
       // 保存当前广告位置的关闭时间
       _timeData[_playLocation] = DateTime.now().millisecondsSinceEpoch;
       // 当前位置重新走缓存(有可能同一个广告被多个位置持有，需要同时开启缓存)
@@ -381,10 +389,8 @@ mixin AdService {
         _cacheLocationAd(index: 0, location: location, scene: _playScene);
       }
     }
-    // 非激励广告 需要二次触发广告
-    await Future.delayed(const Duration(milliseconds: 150));
+    //二次触发广告
     _showSecond(scene: _playScene, data: adData);
-    if (_showAd == false) adPlayExitNotif();
   }
 
   /// 广告点击

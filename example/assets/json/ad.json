@@ -10,6 +10,8 @@
   "native_push": 0.5,
   "native_push_two": 0.5,
   "play_ad_time": 600,
+  "second": "seconds",
+  "second_rv": "seconds",
   "ad_data": {
     "open": [
       {

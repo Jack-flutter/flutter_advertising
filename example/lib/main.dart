@@ -48,11 +48,23 @@ class _MyAppState extends State<MyApp> {
   }
 
   void showOpen() {
-    AdTestService.R.popAd(scene: 'home', location: 'open');
+    AdTestService.R.popAd(
+      scene: 'home',
+      location: 'open',
+      exitCall: () {
+        log('广告关闭了');
+      },
+    );
   }
 
   void showPlay() {
-    AdTestService.R.popAd(scene: 'home', location: 'play');
+    AdTestService.R.popAd(
+      scene: 'home',
+      location: 'play',
+      exitCall: () {
+        log('广告关闭了');
+      },
+    );
   }
 
   @override

@@ -6,12 +6,14 @@ class AdConfig {
   int splashTime; //冷启动时最长广告加载时间
   int nativeShowTime; //原生广告显示关闭按钮时间
   int nativeShowTimeTwo; //原生广告显示关闭按钮时间
-  int playCount; //播放第几个播放广告
+  int playCount; //播放中第几个播放广告
   int playTime; //播放中触发广告时间
   double playPush; //播放中原生广告点击跳转概率 0-1
   double nativePush; //原生广告点击概率 0-1
   double nativePushTwo; //原生广告点击概率 0-1
   int playAdTime; //播放中广告的时间点设置
+  String second; //非激励补充广告
+  String secondRv; //激励补充广告
   Map<String, List<AdItem>> adData; //广告数据 key-广告位 value-广告集合
 
   AdConfig({
@@ -26,6 +28,8 @@ class AdConfig {
     required this.nativeShowTimeTwo,
     required this.nativePush,
     required this.nativePushTwo,
+    required this.second,
+    required this.secondRv,
     required this.adData,
   });
 
@@ -48,6 +52,8 @@ class AdConfig {
       nativePush: json['native_push'] ?? 0.5,
       nativePushTwo: json['native_push_two'] ?? 0.5,
       playAdTime: json['play_ad_time'] ?? 600,
+      second: json['second'] ?? '',
+      secondRv: json['second_rv'] ?? '',
       adData: adData,
     );
   }
@@ -59,14 +65,12 @@ class AdItem {
   final String type; //广告类型 open(横幅) rewarded(激励) interstitial(插页) banner(横幅)
   final String unitId; //广告id
   final String nativeId; //原生id
-  final String secondsType; //补充广告
   AdItem({
     required this.platform,
     required this.weight,
     required this.type,
     required this.unitId,
     this.nativeId = '',
-    this.secondsType = '',
   });
 
   factory AdItem.fromJson(Map<String, dynamic> json) => AdItem(
@@ -75,7 +79,6 @@ class AdItem {
     type: json['type'] ?? '',
     unitId: json['unit_id'] ?? '',
     nativeId: json['native_id'] ?? '',
-    secondsType: json['seconds_type'] ?? '',
   );
 }
 
