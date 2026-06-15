@@ -116,7 +116,7 @@ mixin AdService {
       return false;
     }
     // 是否有效期
-    if (_adValidPlayInterTime(scene, playCount) == false) {
+    if (_adValidPlayInterTime(location, playCount) == false) {
       if (exitCall != null) exitCall();
       return false;
     }
@@ -287,9 +287,9 @@ mixin AdService {
   }
 
   /// 是否有效播放时间
-  bool _adValidPlayInterTime(String scene, int playCount) {
+  bool _adValidPlayInterTime(String location, int playCount) {
     if (playCount == 2) return true;
-    final sameInt = _timeData[scene] ?? 0; //相同位置上次显示时间
+    final sameInt = _timeData[location] ?? 0; //相同位置上次显示时间
     int differentInt = 0; //不同位置上次显示时间
     for (final item in _timeData.values) {
       if (item == sameInt) continue;
@@ -374,7 +374,7 @@ mixin AdService {
     if (adData != null) {
       _cacheData.remove(adUnitId);
       // 保存当前广告位置的关闭时间
-      _timeData[_playScene] = DateTime.now().millisecondsSinceEpoch;
+      _timeData[_playLocation] = DateTime.now().millisecondsSinceEpoch;
       // 当前位置重新走缓存(有可能同一个广告被多个位置持有，需要同时开启缓存)
       for (final String location in adData.locations) {
         // 开启缓存
