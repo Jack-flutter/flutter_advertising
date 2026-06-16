@@ -134,8 +134,9 @@ class _NativesWidgetState extends State<NativesWidget> {
         return Visibility(
           visible: value != 0,
           child: Container(
+            width: 22,
+            height: 22,
             alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
             decoration: BoxDecoration(
               color: Colors.black54,
               borderRadius: BorderRadius.circular(12),

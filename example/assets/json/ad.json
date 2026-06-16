@@ -19,8 +19,7 @@
         "weight": 1,
         "type": "open",
         "unit_id": "ca-app-pub-3940256099942544/5575463023",
-        "native_id": "",
-        "seconds_type": ""
+        "native_id": ""
       }
     ],
     "play": [
@@ -29,8 +28,7 @@
         "weight": 1,
         "type": "interstitial",
         "unit_id": "ca-app-pub-3940256099942544/4411468910",
-        "native_id": "",
-        "seconds_type": "seconds"
+        "native_id": ""
       }
     ],
     "seconds": [
@@ -39,8 +37,7 @@
         "weight": 1,
         "type": "native",
         "unit_id": "ca-app-pub-3940256099942544/3986624511",
-        "native_id": "ca-app-pub-3940256099942544/2521693316",
-        "seconds_type": ""
+        "native_id": "ca-app-pub-3940256099942544/2521693316"
       }
     ]
   }
