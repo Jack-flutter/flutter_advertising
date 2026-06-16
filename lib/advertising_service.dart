@@ -391,6 +391,7 @@ mixin AdService {
     }
     //二次触发广告
     _showSecond(scene: _playScene, data: adData);
+    if (_showAd == false) adPlayExitNotif();
   }
 
   /// 广告点击
