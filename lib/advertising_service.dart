@@ -98,7 +98,7 @@ mixin AdService {
   }
 
   /// 显示广告
-  void popAd({
+  Future popAd({
     required String scene,
     required String location,
     dynamic videoData,
@@ -157,14 +157,17 @@ mixin AdService {
     _cacheLocationAd(index: 0, location: location, scene: scene);
     // 看看第二套广告有缓存没
     if (playCount == 1) {
-      _showSecond(scene: scene, data: _adData);
+      await _showSecond(scene: scene, data: _adData);
     } else {
       _adExitCall?.call();
     }
   }
 
   /// 补偿广告
-  void _showSecond({required String scene, required AdCacheState? data}) {
+  Future _showSecond({
+    required String scene,
+    required AdCacheState? data,
+  }) async {
     _showAd = false;
     String location = '';
     if (data?.data.type == AdDataType.rewarded.value) {
@@ -179,7 +182,7 @@ mixin AdService {
       _adExitCall?.call();
       return;
     }
-    popAd(
+    await popAd(
       playCount: 2,
       scene: scene,
       videoData: _fileData,
@@ -376,7 +379,7 @@ mixin AdService {
   }
 
   /// 广告播放关闭响应
-  void _adPalyExitCall(String adUnitId, AdSdkPlatform type) {
+  void _adPalyExitCall(String adUnitId, AdSdkPlatform type) async {
     final adData = _cacheData[adUnitId];
     if (adData != null) {
       _cacheData.remove(adData.data.unitId);
@@ -390,7 +393,7 @@ mixin AdService {
       }
     }
     //二次触发广告
-    _showSecond(scene: _playScene, data: adData);
+    await _showSecond(scene: _playScene, data: adData);
     if (_showAd == false) adPlayExitNotif();
   }
 
