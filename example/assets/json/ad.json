@@ -9,6 +9,7 @@
   "native_show_time_two": 5,
   "native_push": 0.5,
   "native_push_two": 0.5,
+  "ad_launch_time": 10,
   "play_ad_time": 600,
   "second": "seconds",
   "second_rv": "seconds",

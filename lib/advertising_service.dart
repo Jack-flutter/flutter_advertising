@@ -17,10 +17,12 @@ mixin AdService {
   final Map<String, AdCacheState> _cacheData = {}; //广告缓存记录{广告id:广告数据}
   int _playCount = 0; //广告显示次数
   bool _showAd = false; //广告是否显示
+  bool _isTimeJudgment = true; //是否时间判定
   String? showNativeId; //多原生广告ID
   String _playScene = ''; //广告播放场景
   String _playLocation = ''; //广告播放位置
   AdCacheState? _adData; //当前显示广告的数据记录
+  DateTime _initDate = DateTime.now(); //初始化时间
   dynamic _fileData; // 播放的视频数据
   Function()? _adExitCall; //广告关闭回调
   Function(Set<String> locations)? adCaacheSucceedCall; //单个广告缓存成功回调
@@ -85,6 +87,7 @@ mixin AdService {
     } catch (e) {
       adConfig = AdConfig.fromJson({});
     }
+    _initDate = DateTime.now();
     return adConfig;
   }
 
@@ -105,6 +108,17 @@ mixin AdService {
     int playCount = 1,
     Function()? exitCall,
   }) async {
+    // 广告显示时间
+    if (_isTimeJudgment == true) {
+      Duration difference = _initDate.difference(DateTime.now());
+      int secondsDifference = difference.inSeconds.abs();
+      if (secondsDifference > adConfig.adLaunchTime) {
+        _isTimeJudgment = false;
+      } else {
+        exitCall?.call();
+        return;
+      }
+    }
     // 是否可显示广告
     if (_showAd == true && advertisingEnabled() == false) {
       exitCall?.call();

@@ -8,10 +8,11 @@ class AdConfig {
   int nativeShowTimeTwo; //原生广告显示关闭按钮时间
   int playCount; //播放中第几个播放广告
   int playTime; //播放中触发广告时间
+  int playAdTime; //播放中广告的时间点设置
+  int adLaunchTime; //广告启动时间
   double playPush; //播放中原生广告点击跳转概率 0-1
   double nativePush; //原生广告点击概率 0-1
   double nativePushTwo; //原生广告点击概率 0-1
-  int playAdTime; //播放中广告的时间点设置
   String second; //非激励补充广告
   String secondRv; //激励补充广告
   Map<String, List<AdItem>> adData; //广告数据 key-广告位 value-广告集合
@@ -24,6 +25,7 @@ class AdConfig {
     required this.playTime,
     required this.playPush,
     required this.playAdTime,
+    required this.adLaunchTime,
     required this.nativeShowTime,
     required this.nativeShowTimeTwo,
     required this.nativePush,
@@ -47,11 +49,12 @@ class AdConfig {
       playCount: json['play_count'] ?? 3,
       playTime: json['play_time'] ?? 5,
       playPush: json['play_push'] ?? 0.5,
+      playAdTime: json['play_ad_time'] ?? 600,
+      adLaunchTime: json['ad_launch_time'] ?? 0,
       nativeShowTime: json['native_show_time'] ?? 3,
       nativeShowTimeTwo: json['native_show_time_two'] ?? 5,
       nativePush: json['native_push'] ?? 0.5,
       nativePushTwo: json['native_push_two'] ?? 0.5,
-      playAdTime: json['play_ad_time'] ?? 600,
       second: json['second'] ?? '',
       secondRv: json['second_rv'] ?? '',
       adData: adData,
