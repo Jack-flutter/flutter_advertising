@@ -120,7 +120,7 @@ mixin AdService {
       }
     }
     // 是否可显示广告
-    if (_showAd == true && advertisingEnabled() == false) {
+    if (_showAd == true || advertisingEnabled() == false) {
       exitCall?.call();
       return;
     }
