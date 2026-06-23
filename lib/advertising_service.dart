@@ -16,6 +16,7 @@ mixin AdService {
   final Map<String, int> _timeData = {}; // 广告显示时间记录
   final Map<String, AdCacheState> _cacheData = {}; //广告缓存记录{广告id:广告数据}
   int _playCount = 0; //广告显示次数
+  bool _isInitAd = false; //广告是否初始化
   bool _showAd = false; //广告是否显示
   bool _isTimeJudgment = true; //是否时间判定
   String? showNativeId; //多原生广告ID
@@ -67,6 +68,7 @@ mixin AdService {
 
   /// 初始化
   Future initAppAdSdk({required String lovinKey}) async {
+    _isInitAd = false;
     final callData = AdCallback(
       cacheSucceed: _adLoadSucceed,
       cacheFailed: _adLoadFailed,
@@ -78,6 +80,7 @@ mixin AdService {
     mobileSdk = SdkMobile(callback: callData, service: this);
     lovinSdk = SdkLovin(callback: callData, service: this);
     await Future.wait([mobileSdk.initialize(), lovinSdk.initialize(lovinKey)]);
+    _isInitAd = true;
   }
 
   /// 更新配置
@@ -108,6 +111,11 @@ mixin AdService {
     int playCount = 1,
     Function()? exitCall,
   }) async {
+    // 是否可显示广告
+    if (_showAd || _isInitAd == false || advertisingEnabled() == false) {
+      exitCall?.call();
+      return;
+    }
     // 广告显示时间
     if (_isTimeJudgment == true) {
       Duration difference = _initDate.difference(DateTime.now());
@@ -118,11 +126,6 @@ mixin AdService {
         exitCall?.call();
         return;
       }
-    }
-    // 是否可显示广告
-    if (_showAd == true || advertisingEnabled() == false) {
-      exitCall?.call();
-      return;
     }
     // 是否有广告
     if (_obtionAdData(location).isEmpty) {
@@ -142,23 +145,19 @@ mixin AdService {
     _playCount = playCount;
     reportAdEvent(event: AdEventType.needShow, scene: scene);
     // 找出缓存的广告
-    bool isCache = false;
     for (final item in _cacheData.values) {
-      if (item.locations.contains(location)) {
+      if (item.locations.contains(location) && item.isCache == true) {
         _adData = item;
-        isCache = item.isCache;
         break;
       }
     }
-    if (isCache == true && playCount == 2) {
+    if (_adData != null && playCount == 2) {
       await Future.delayed(const Duration(milliseconds: 160));
     }
     // 按类型显示广告
-    if (_adData?.data.platform == AdSdkPlatform.admob.value &&
-        isCache == true) {
+    if (_adData?.data.platform == AdSdkPlatform.admob.value) {
       _showAd = mobileSdk.showMobileAd(_adData!);
-    } else if (_adData?.data.platform == AdSdkPlatform.lovin.value &&
-        isCache == true) {
+    } else if (_adData?.data.platform == AdSdkPlatform.lovin.value) {
       _showAd = lovinSdk.showLovinAd(_adData!);
     }
     if (_showAd == true) return;
