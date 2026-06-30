@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void showOpen() {
-    AdTestService.R.popAd(
+    AdTestService.R.show(
       scene: 'home',
       location: 'open',
       exitCall: () {
@@ -58,7 +58,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void showPlay() {
-    AdTestService.R.popAd(
+    AdTestService.R.show(
       scene: 'home',
       location: 'play',
       exitCall: () {

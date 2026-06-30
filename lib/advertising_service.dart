@@ -99,15 +99,15 @@ mixin AdService {
     debugPrint('广告开始缓存');
     _playScene = scene;
     for (final key in adConfig.adData.keys) {
-      _cacheLocationAd(index: 0, location: key, scene: scene);
+      _starCacheAdData(index: 0, location: key, scene: scene);
     }
   }
 
   /// 显示广告
-  Future popAd({
+  Future show({
     required String scene,
     required String location,
-    dynamic videoData,
+    dynamic data,
     int playCount = 1,
     Function()? exitCall,
   }) async {
@@ -138,7 +138,7 @@ mixin AdService {
       return;
     }
     _adData = null;
-    _fileData = videoData;
+    _fileData = data;
     _playScene = scene;
     _playLocation = location;
     _adExitCall = exitCall;
@@ -152,6 +152,7 @@ mixin AdService {
       }
     }
     if (_adData != null && playCount == 2) {
+      _showAd = true;
       await Future.delayed(const Duration(milliseconds: 160));
     }
     // 按类型显示广告
@@ -167,17 +168,17 @@ mixin AdService {
       code: "No padding",
     );
     // 没找到对应的平台或者没有广告-重新走缓存流程
-    _cacheLocationAd(index: 0, location: location, scene: scene);
+    _starCacheAdData(index: 0, location: location, scene: scene);
     // 看看第二套广告有缓存没
     if (playCount == 1) {
-      await _showSecond(scene: scene, data: _adData);
+      await _showSecondAd(scene: scene, data: _adData);
     } else {
       _adExitCall?.call();
     }
   }
 
   /// 补偿广告
-  Future _showSecond({
+  Future _showSecondAd({
     required String scene,
     required AdCacheState? data,
   }) async {
@@ -195,10 +196,10 @@ mixin AdService {
       _adExitCall?.call();
       return;
     }
-    await popAd(
+    await show(
       playCount: 2,
       scene: scene,
-      videoData: _fileData,
+      data: _fileData,
       location: location,
       exitCall: _adExitCall,
     );
@@ -237,7 +238,7 @@ mixin AdService {
   }
 
   /// 原生mob广告主动关闭
-  void closeNativeMobAdPlay(List<dynamic> ads) {
+  void closeNativeAd(List<dynamic> ads) {
     for (Ad ad in ads) {
       final AdCacheState? adData = _cacheData[ad.adUnitId];
       final isRep = adData?.locations.isNotEmpty ?? false;
@@ -246,7 +247,7 @@ mixin AdService {
   }
 
   /// 广告位置缓存
-  void _cacheLocationAd({
+  void _starCacheAdData({
     required int index,
     required String location,
     required String scene,
@@ -255,7 +256,7 @@ mixin AdService {
     if ((index + 1) > amList.length || index < 0) return;
     final item = amList[index];
     if (item.unitId.isEmpty) {
-      _cacheLocationAd(index: index + 1, location: location, scene: scene);
+      _starCacheAdData(index: index + 1, location: location, scene: scene);
       return;
     }
     // max广告同一个位置只能缓存一个
@@ -263,7 +264,7 @@ mixin AdService {
       if (ads.data.platform == AdSdkPlatform.lovin.value &&
           item.unitId == ads.data.unitId) {
         ads.locations.add(location);
-        _cacheLocationAd(index: index + 1, location: location, scene: scene);
+        _starCacheAdData(index: index + 1, location: location, scene: scene);
         return;
       }
     }
@@ -356,7 +357,7 @@ mixin AdService {
       // 找出当前广告缓存下标
       final index = amList.indexWhere((item) => item.unitId == adUnitId);
       // 重新缓存下一个
-      _cacheLocationAd(index: index + 1, location: location, scene: data.scene);
+      _starCacheAdData(index: index + 1, location: location, scene: data.scene);
     }
   }
 
@@ -402,11 +403,11 @@ mixin AdService {
       // 当前位置重新走缓存(有可能同一个广告被多个位置持有，需要同时开启缓存)
       for (final String location in adData.locations) {
         // 开启缓存
-        _cacheLocationAd(index: 0, location: location, scene: _playScene);
+        _starCacheAdData(index: 0, location: location, scene: _playScene);
       }
     }
     //二次触发广告
-    await _showSecond(scene: _playScene, data: adData);
+    await _showSecondAd(scene: _playScene, data: adData);
     if (_showAd == false) adPlayExitNotif();
   }
 

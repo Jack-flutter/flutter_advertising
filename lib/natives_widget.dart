@@ -70,7 +70,7 @@ class _NativesWidgetState extends State<NativesWidget> {
 
   /// 关闭弹出
   void closeAdWidget(BuildContext context) {
-    widget.service.closeNativeMobAdPlay(widget.childs);
+    widget.service.closeNativeAd(widget.childs);
     setState(() {
       firstWidget = null;
       lastWidget = null;
