@@ -16,7 +16,6 @@ mixin AdService {
   late AdConfig adConfig; //广告配置
   final Map<String, int> _timeData = {}; // 广告显示时间记录
   final Map<String, AdCacheState> _cacheData = {}; //广告缓存记录{广告id:广告数据}
-  bool isTracking = false; // 是否同意 ATT 追踪权限
   int _playCount = 0; //广告显示次数
   bool _isInitAd = false; //广告是否初始化
   bool _showAd = false; //广告是否显示
@@ -426,11 +425,9 @@ mixin AdService {
       // 用户拒绝 ATT 追踪 → 不展示 GDPR 追踪弹窗，直接标记完成
       if (status == TrackingStatus.notSupported ||
           status == TrackingStatus.denied) {
-        isTracking = false;
         completeCall(false);
         return;
       }
-      isTracking = true;
       final canRequestAds = await ConsentInformation.instance.canRequestAds();
       if (canRequestAds == true) {
         completeCall(false);
