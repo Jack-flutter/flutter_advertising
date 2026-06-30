@@ -421,13 +421,12 @@ mixin AdService {
   /// 请求广告权限认证
   void requestConsentInfoUpdate(Function(bool) completeCall) async {
     try {
-      final TrackingStatus status =
-          await AppTrackingTransparency.requestTrackingAuthorization();
+      final status = await AppTrackingTransparency.trackingAuthorizationStatus;
       // 用户拒绝 ATT 追踪 → 不展示 GDPR 追踪弹窗，直接标记完成
       if (status == TrackingStatus.notSupported ||
           status == TrackingStatus.denied) {
-        completeCall(false);
         isTracking = false;
+        completeCall(false);
         return;
       }
       isTracking = true;
