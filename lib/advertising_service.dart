@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
@@ -419,38 +420,38 @@ mixin AdService {
   }
 
   /// 请求广告权限认证
-  void requestConsentInfoUpdate(Function(bool) completeCall) async {
+  Future<bool> requestConsentInfoUpdate() async {
+    final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+    // 用户拒绝 ATT 追踪 → 不展示 GDPR 追踪弹窗，直接标记完成
+    if (status == .notSupported || status == .denied) {
+      return false;
+    }
+    Completer<bool> emFuture = Completer();
     try {
-      final status = await AppTrackingTransparency.trackingAuthorizationStatus;
-      // 用户拒绝 ATT 追踪 → 不展示 GDPR 追踪弹窗，直接标记完成
-      if (status == TrackingStatus.notSupported ||
-          status == TrackingStatus.denied) {
-        completeCall(false);
-        return;
-      }
       final canRequestAds = await ConsentInformation.instance.canRequestAds();
       if (canRequestAds == true) {
-        completeCall(false);
-        return;
+        emFuture.complete(false);
+      } else {
+        final params = ConsentRequestParameters(
+          consentDebugSettings: ConsentDebugSettings(
+            debugGeography: DebugGeography.debugGeographyEea,
+          ),
+        );
+        ConsentInformation.instance.requestConsentInfoUpdate(
+          params,
+          () {
+            ConsentForm.loadAndShowConsentFormIfRequired((loadAndShowError) {
+              emFuture.complete(true);
+            });
+          },
+          (FormError formError) {
+            emFuture.complete(false);
+          },
+        );
       }
-      final params = ConsentRequestParameters(
-        consentDebugSettings: ConsentDebugSettings(
-          debugGeography: DebugGeography.debugGeographyEea,
-        ),
-      );
-      ConsentInformation.instance.requestConsentInfoUpdate(
-        params,
-        () {
-          ConsentForm.loadAndShowConsentFormIfRequired((loadAndShowError) {
-            completeCall(true);
-          });
-        },
-        (FormError formError) {
-          completeCall(false);
-        },
-      );
     } catch (_) {
-      completeCall(false);
+      emFuture.complete(false);
     }
+    return emFuture.future;
   }
 }
