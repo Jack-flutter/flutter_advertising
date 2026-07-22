@@ -64,13 +64,11 @@ class AdConfig {
 
 class AdItem {
   final String platform; //广告来源
-  final int weight; //广告权重
   final String type; //广告类型 open(横幅) rewarded(激励) interstitial(插页) banner(横幅)
   final String unitId; //广告id
   final String nativeId; //原生id
   AdItem({
     required this.platform,
-    required this.weight,
     required this.type,
     required this.unitId,
     this.nativeId = '',
@@ -78,7 +76,6 @@ class AdItem {
 
   factory AdItem.fromJson(Map<String, dynamic> json) => AdItem(
     platform: json['platform'] ?? '',
-    weight: json['weight'] ?? 0,
     type: json['type'] ?? '',
     unitId: json['unit_id'] ?? '',
     nativeId: json['native_id'] ?? '',

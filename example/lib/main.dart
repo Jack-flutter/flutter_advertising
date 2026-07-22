@@ -36,7 +36,6 @@ class _MyAppState extends State<MyApp> {
     items.add(
       AdItem(
         platform: 'admob',
-        weight: 2,
         type: 'rewarded',
         unitId: 'ca-app-pub-3940256099942544/1712485313',
       ),

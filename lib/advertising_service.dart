@@ -81,8 +81,13 @@ mixin AdService {
     );
     mobileSdk = SdkMobile(callback: callData, service: this);
     lovinSdk = SdkLovin(callback: callData, service: this);
-    await Future.wait([mobileSdk.initialize(), lovinSdk.initialize(lovinKey)]);
-    _isInitAd = true;
+    try {
+      await mobileSdk.initialize();
+      if (lovinKey.isNotEmpty) await lovinSdk.initialize(lovinKey);
+      _isInitAd = true;
+    } catch (_) {
+      _isInitAd = false;
+    }
   }
 
   /// 更新配置
@@ -287,7 +292,6 @@ mixin AdService {
       // 第二套原生广告缓存
       final data = AdItem(
         platform: item.platform,
-        weight: 1,
         type: AdDataType.native.value,
         unitId: item.nativeId,
         nativeId: location,
