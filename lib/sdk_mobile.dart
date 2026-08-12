@@ -7,7 +7,7 @@ import 'advertising_data.dart';
 import 'advertising_service.dart';
 
 class SdkMobile {
-  final AdService service;
+  final FlutterAdService service;
   final AdCallback callback;
 
   SdkMobile({required this.callback, required this.service});

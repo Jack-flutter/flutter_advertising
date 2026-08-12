@@ -9,7 +9,7 @@ import 'advertising_service.dart';
 class NativesWidget extends StatefulWidget {
   final int time;
   final double rate;
-  final AdService service;
+  final FlutterAdService service;
   final List<dynamic> childs;
 
   const NativesWidget({

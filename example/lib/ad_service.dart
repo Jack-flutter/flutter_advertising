@@ -5,7 +5,7 @@ import 'package:flutter_advertising/natives_widget.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-class AdTestService with AdService {
+class AdTestService with FlutterAdService {
   /// 单例
   static AdTestService R = AdTestService._getInstance();
   static AdTestService? _r;

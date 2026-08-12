@@ -11,7 +11,7 @@ import 'natives_widget.dart';
 import 'sdk_lovin.dart';
 import 'sdk_mobile.dart';
 
-mixin AdService {
+mixin FlutterAdService {
   late final SdkMobile mobileSdk; //mod广告
   late final SdkLovin lovinSdk; //max广告
   late AdConfig adConfig; //广告配置
@@ -20,12 +20,10 @@ mixin AdService {
   int _playCount = 0; //广告显示次数
   bool _isInitAd = false; //广告是否初始化
   bool _showAd = false; //广告是否显示
-  bool _isTimeJudgment = true; //是否时间判定
   String? showNativeId; //多原生广告ID
   String _playScene = ''; //广告播放场景
   String _playLocation = ''; //广告播放位置
   AdCacheState? _adData; //当前显示广告的数据记录
-  DateTime _initDate = DateTime.now(); //初始化时间
   dynamic _fileData; // 播放的视频数据
   Function()? _adExitCall; //广告关闭回调
   Function(Set<String> locations)? adCaacheSucceedCall; //单个广告缓存成功回调
@@ -97,7 +95,6 @@ mixin AdService {
     } catch (e) {
       adConfig = AdConfig.fromJson({});
     }
-    _initDate = DateTime.now();
     return adConfig;
   }
 
@@ -122,17 +119,6 @@ mixin AdService {
     if (_showAd || _isInitAd == false || advertisingEnabled() == false) {
       exitCall?.call();
       return;
-    }
-    // 广告显示时间
-    if (_isTimeJudgment == true) {
-      Duration difference = _initDate.difference(DateTime.now());
-      int secondsDifference = difference.inSeconds.abs();
-      if (secondsDifference > adConfig.adLaunchTime) {
-        _isTimeJudgment = false;
-      } else {
-        exitCall?.call();
-        return;
-      }
     }
     // 是否有广告
     if (_obtionAdData(location).isEmpty) {
@@ -246,6 +232,7 @@ mixin AdService {
 
   /// 原生mob广告主动关闭
   void closeNativeAd(List<dynamic> ads) {
+    _showAd = false;
     for (Ad ad in ads) {
       final AdCacheState? adData = _cacheData[ad.adUnitId];
       final isRep = adData?.locations.isNotEmpty ?? false;

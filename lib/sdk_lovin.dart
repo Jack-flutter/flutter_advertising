@@ -6,7 +6,7 @@ import 'advertising_data.dart';
 import 'advertising_service.dart';
 
 class SdkLovin {
-  final AdService service;
+  final FlutterAdService service;
   final AdCallback callback;
 
   SdkLovin({required this.callback, required this.service});
