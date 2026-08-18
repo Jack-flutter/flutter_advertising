@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
 
   applovin_max: ^4.6.4
-  google_mobile_ads: ^9.0.0
+  google_mobile_ads: ^8.0.0
   app_tracking_transparency: ^2.0.7
 
 dev_dependencies:
