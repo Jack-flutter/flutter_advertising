@@ -208,23 +208,10 @@ mixin FlutterAdService {
         adList.add(item.ad);
       }
     }
-    int time = 0;
-    double open = 0.0;
-    if (_playLocation == playingAdLocationKey()) {
-      open = adConfig.playPush;
-    } else {
-      if (adList.length == 2) {
-        time = adConfig.nativeShowTimeTwo;
-        open = adConfig.nativePushTwo;
-      } else {
-        time = adConfig.nativeShowTime;
-        open = adConfig.nativePush;
-      }
-    }
+    bool isBack = !(_playLocation == playingAdLocationKey());
     final view = NativesWidget(
       service: this,
-      time: time,
-      rate: open,
+      isBack: isBack,
       childs: adList.toList(),
     );
     adNativesShowNotif(view);

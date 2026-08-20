@@ -36,9 +36,14 @@ class _MyAppState extends State<MyApp> {
     items.add(
       AdItem(
         platform: 'admob',
-        type: 'rewarded',
-        unitId: 'ca-app-pub-3940256099942544/1712485313',
+        type: 'native',
+        unitId: 'ca-app-pub-3940256099942544/3986624511',
       ),
+      // AdItem(
+      //   platform: 'admob',
+      //   type: 'rewarded',
+      //   unitId: 'ca-app-pub-3940256099942544/1712485313',
+      // ),
     );
     cf.adData['play'] = items;
     // 开启缓存
