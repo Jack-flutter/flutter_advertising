@@ -4,13 +4,13 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'advertising_service.dart';
 
 class NativesWidget extends StatefulWidget {
-  final bool isBack;
+  final bool isBlack;
   final FlutterAdService service;
   final List<dynamic> childs;
 
   const NativesWidget({
     super.key,
-    required this.isBack,
+    required this.isBlack,
     required this.childs,
     required this.service,
   });
@@ -52,7 +52,7 @@ class _NativesWidgetState extends State<NativesWidget> {
   Widget build(BuildContext context) {
     final size = 320.0;
     return Container(
-      color: widget.isBack ? Colors.black : Colors.transparent,
+      color: widget.isBlack ? Colors.black : Colors.transparent,
       width: double.maxFinite,
       height: double.maxFinite,
       alignment: Alignment.center,
@@ -71,13 +71,13 @@ class _NativesWidgetState extends State<NativesWidget> {
               margin: EdgeInsets.only(bottom: 6),
               alignment: .center,
               decoration: BoxDecoration(
-                color: widget.isBack ? Colors.white : Colors.black54,
+                color: widget.isBlack ? Colors.white : Colors.black54,
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Icon(
                 Icons.close,
-                color: widget.isBack ? Colors.black : Colors.white,
-                size: 20,
+                color: widget.isBlack ? Colors.black : Colors.white,
+                size: 16,
               ),
             ),
           ),

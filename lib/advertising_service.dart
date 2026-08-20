@@ -208,10 +208,10 @@ mixin FlutterAdService {
         adList.add(item.ad);
       }
     }
-    bool isBack = !(_playLocation == playingAdLocationKey());
+    bool isBlack = !(_playLocation == playingAdLocationKey());
     final view = NativesWidget(
       service: this,
-      isBack: isBack,
+      isBlack: isBlack,
       childs: adList.toList(),
     );
     adNativesShowNotif(view);
