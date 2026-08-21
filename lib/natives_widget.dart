@@ -43,14 +43,13 @@ class _NativesWidgetState extends State<NativesWidget> {
   }
 
   /// 关闭弹出
-  void closeAdWidget(BuildContext context) {
+  void closeAdWidget() {
     widget.service.closeNativeAd(widget.childs);
-    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = 320.0;
+    final isLandscape = MediaQuery.orientationOf(context) == .landscape;
     return Container(
       color: widget.isBlack ? Colors.black : Colors.transparent,
       width: double.maxFinite,
@@ -61,9 +60,7 @@ class _NativesWidgetState extends State<NativesWidget> {
         crossAxisAlignment: .end,
         children: [
           GestureDetector(
-            onTap: () {
-              closeAdWidget(context);
-            },
+            onTap: closeAdWidget,
             behavior: .opaque,
             child: Container(
               width: 24,
@@ -81,35 +78,38 @@ class _NativesWidgetState extends State<NativesWidget> {
               ),
             ),
           ),
-          Wrap(
-            spacing: 16,
-            runSpacing: 16,
-            direction: Axis.vertical,
-            children: [
-              if (firstWidget != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    color: Colors.white,
-                    width: size * 0.8,
-                    height: size * 0.68,
-                    child: firstWidget,
-                  ),
-                ),
-              if (lastWidget != null)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    color: Colors.white,
-                    width: size * 0.8,
-                    height: size * 0.68,
-                    child: lastWidget,
-                  ),
-                ),
-            ],
-          ),
+          isLandscape
+              ? Row(mainAxisSize: .min, children: _buildListWidgets())
+              : Column(mainAxisSize: .min, children: _buildListWidgets()),
         ],
       ),
     );
+  }
+
+  List<Widget> _buildListWidgets() {
+    final size = 320.0;
+    return [
+      if (firstWidget != null)
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            color: Colors.white,
+            width: size * 0.8,
+            height: size * 0.68,
+            child: firstWidget,
+          ),
+        ),
+      const SizedBox(width: 15, height: 15),
+      if (lastWidget != null)
+        ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            color: Colors.white,
+            width: size * 0.8,
+            height: size * 0.68,
+            child: lastWidget,
+          ),
+        ),
+    ];
   }
 }

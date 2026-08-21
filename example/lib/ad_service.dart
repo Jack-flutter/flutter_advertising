@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advertising/advertising_constant.dart';
 import 'package:flutter_advertising/advertising_service.dart';
-import 'package:flutter_advertising/natives_widget.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -18,18 +17,9 @@ class AdTestService with FlutterAdService {
   AdTestService._();
 
   @override
-  void adNativesShowNotif(NativesWidget widget) {
+  OverlayState? getAppOverlayState() {
     // TODO: implement adNativesShowNotif
-    if (navigatorKey.currentContext == null) return;
-    showModalBottomSheet(
-      context: navigatorKey.currentContext!,
-      isDismissible: false,
-      isScrollControlled: true,
-      enableDrag: false,
-      builder: (_) {
-        return widget;
-      },
-    );
+    return navigatorKey.currentState?.overlay;
   }
 
   @override

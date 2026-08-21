@@ -12,6 +12,7 @@ import 'sdk_lovin.dart';
 import 'sdk_mobile.dart';
 
 mixin FlutterAdService {
+  OverlayEntry? adOverlayEntry;
   late final SdkMobile mobileSdk; //mod广告
   late final SdkLovin lovinSdk; //max广告
   late AdConfig adConfig; //广告配置
@@ -40,8 +41,8 @@ mixin FlutterAdService {
   /// 播放中广告位置key
   String playingAdLocationKey();
 
-  /// 原生广告显示通知
-  void adNativesShowNotif(NativesWidget widget);
+  /// 获取全局上下文
+  OverlayState? getAppOverlayState();
 
   /// 发送埋点事件
   void reportAdEvent({
@@ -200,31 +201,46 @@ mixin FlutterAdService {
 
   /// 显示原生广告
   void showNativeAd(AdCacheState data) {
-    Set<dynamic> adList = {data.ad};
-    // 添加第二套原生广告
-    for (final item in _cacheData.values) {
-      if (item.data.nativeId == _playLocation && item.isCache == true) {
-        showNativeId = item.data.unitId;
-        adList.add(item.ad);
+    try {
+      Set<dynamic> adList = {data.ad};
+      // 添加第二套原生广告
+      for (final item in _cacheData.values) {
+        if (item.data.nativeId == _playLocation && item.isCache == true) {
+          showNativeId = item.data.unitId;
+          adList.add(item.ad);
+        }
       }
+      bool isBlack = !(_playLocation == playingAdLocationKey());
+      OverlayState? overlay = getAppOverlayState();
+      if (overlay == null) {
+        _showAd = false;
+        _adExitCall?.call();
+        return;
+      }
+      adOverlayEntry = OverlayEntry(
+        builder: (_) => NativesWidget(
+          service: this,
+          isBlack: isBlack,
+          childs: adList.toList(),
+        ),
+      );
+      overlay.insert(adOverlayEntry!);
+    } catch (_) {
+      _showAd = false;
+      _adExitCall?.call();
+      debugPrint('原生广告显示失败');
     }
-    bool isBlack = !(_playLocation == playingAdLocationKey());
-    final view = NativesWidget(
-      service: this,
-      isBlack: isBlack,
-      childs: adList.toList(),
-    );
-    adNativesShowNotif(view);
   }
 
   /// 原生mob广告主动关闭
   void closeNativeAd(List<dynamic> ads) {
-    _showAd = false;
     for (Ad ad in ads) {
       final AdCacheState? adData = _cacheData[ad.adUnitId];
       final isRep = adData?.locations.isNotEmpty ?? false;
       mobileSdk.nativeMobAdPlayClose(ad: ad, isRep: isRep);
     }
+    adOverlayEntry?.remove();
+    adOverlayEntry = null;
   }
 
   /// 广告位置缓存
