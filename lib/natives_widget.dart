@@ -3,7 +3,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'advertising_service.dart';
 
-class NativesWidget extends StatefulWidget {
+class NativesWidget extends StatelessWidget {
   final bool isBlack;
   final FlutterAdService service;
   final List<dynamic> childs;
@@ -15,43 +15,16 @@ class NativesWidget extends StatefulWidget {
     required this.service,
   });
 
-  @override
-  State<NativesWidget> createState() => _NativesWidgetState();
-}
-
-class _NativesWidgetState extends State<NativesWidget> {
-  AdWidget? firstWidget;
-  AdWidget? lastWidget;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    if (widget.childs.isNotEmpty) {
-      firstWidget = AdWidget(ad: widget.childs.first, key: UniqueKey());
-    }
-    if (widget.childs.length > 1) {
-      lastWidget = AdWidget(ad: widget.childs.last, key: UniqueKey());
-    }
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    debugPrint('---原生广告关闭---');
-    super.dispose();
-  }
-
   /// 关闭弹出
   void closeAdWidget() {
-    widget.service.closeNativeAd(widget.childs);
+    service.closeNativeAd(childs);
   }
 
   @override
   Widget build(BuildContext context) {
     final isLandscape = MediaQuery.orientationOf(context) == .landscape;
     return Container(
-      color: widget.isBlack ? Colors.black : Colors.transparent,
+      color: isBlack ? Colors.black : Colors.transparent,
       width: double.maxFinite,
       height: double.maxFinite,
       alignment: Alignment.center,
@@ -68,12 +41,12 @@ class _NativesWidgetState extends State<NativesWidget> {
               margin: EdgeInsets.only(bottom: 6),
               alignment: .center,
               decoration: BoxDecoration(
-                color: widget.isBlack ? Colors.white : Colors.black54,
+                color: isBlack ? Colors.white : Colors.black54,
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Icon(
                 Icons.close,
-                color: widget.isBlack ? Colors.black : Colors.white,
+                color: isBlack ? Colors.black : Colors.white,
                 size: 16,
               ),
             ),
@@ -89,25 +62,25 @@ class _NativesWidgetState extends State<NativesWidget> {
   List<Widget> _buildListWidgets() {
     final size = 320.0;
     return [
-      if (firstWidget != null)
+      if (childs.isNotEmpty)
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Container(
             color: Colors.white,
             width: size * 0.8,
             height: size * 0.68,
-            child: firstWidget,
+            child: AdWidget(ad: childs.first),
           ),
         ),
-      const SizedBox(width: 15, height: 15),
-      if (lastWidget != null)
+      if (childs.length > 1) const SizedBox(width: 15, height: 15),
+      if (childs.length > 1)
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Container(
             color: Colors.white,
             width: size * 0.8,
             height: size * 0.68,
-            child: lastWidget,
+            child: AdWidget(ad: childs.last),
           ),
         ),
     ];
