@@ -34,6 +34,7 @@ mixin FlutterAdService {
   bool get adShow => _showAd; //是否显示广告
   String get adLocation => _playLocation; //广告播放位置
   String get adScene => _playScene; //广告播放场景
+  AdCacheState? get adPlayData => _adData; //正在显示广告
 
   /// 广告是否开启
   bool advertisingEnabled();
