@@ -108,14 +108,14 @@ class SdkLovin {
 
   /// Max广告缓存失败回调
   void _lovinAdFailed(String adUnitId, MaxError? error) {
-    final code = error?.code == null ? '0' : error!.code.toString();
+    final code = error?.message ?? 'network_error';
     callback.cacheFailed(adUnitId, code, AdSdkPlatform.lovin);
     debugPrint('Max广告缓存失败 $adUnitId ${error?.message}');
   }
 
   /// Max广告显示失败
   void _lovinAdDisplayFailedCallback(MaxAd ad, MaxError error) {
-    final code = error.code.toString();
+    final code = error.toString();
     callback.showFailed(ad.adUnitId, code, AdSdkPlatform.lovin);
   }
 

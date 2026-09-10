@@ -49,6 +49,8 @@ mixin FlutterAdService {
   void reportAdEvent({
     required AdEventType event,
     required String scene,
+    String? format,
+    String? adUnitId,
     String? code,
   });
 
@@ -337,7 +339,12 @@ mixin FlutterAdService {
     data.isCache = true;
     data.ad = ad;
     _cacheData[adUnitId] = data;
-    reportAdEvent(event: AdEventType.reqSuc, scene: data.scene);
+    reportAdEvent(
+      event: AdEventType.reqSuc,
+      scene: data.scene,
+      format: type.name,
+      adUnitId: adUnitId,
+    );
     if (adCaacheSucceedCall != null) adCaacheSucceedCall!(data.locations);
   }
 
@@ -345,7 +352,13 @@ mixin FlutterAdService {
   void _adLoadFailed(String adUnitId, String code, AdSdkPlatform type) {
     final AdCacheState? data = _cacheData[adUnitId];
     if (data == null) return;
-    reportAdEvent(event: AdEventType.reqFail, scene: data.scene, code: code);
+    reportAdEvent(
+      event: AdEventType.reqFail,
+      scene: data.scene,
+      code: code,
+      format: type.name,
+      adUnitId: adUnitId,
+    );
     // 删除失败的广告缓存
     _cacheData.remove(adUnitId);
     // 重新缓存下一个广告id 如果有多个位置需要同时缓存加入

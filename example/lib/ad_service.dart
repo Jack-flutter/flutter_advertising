@@ -58,6 +58,8 @@ class AdTestService with FlutterAdService {
   void reportAdEvent({
     required AdEventType event,
     required String scene,
+    String? format,
+    String? adUnitId,
     String? code,
   }) {
     // TODO: implement reportAdEvent

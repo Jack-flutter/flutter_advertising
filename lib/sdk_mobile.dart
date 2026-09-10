@@ -174,14 +174,14 @@ class SdkMobile {
 
   /// mob广告缓存失败回调
   void _mobileAdFailed(LoadAdError error, String adUnitId) {
-    final code = error.code.toString();
+    final code = error.message;
     callback.cacheFailed(adUnitId, code, AdSdkPlatform.admob);
     debugPrint('adMob广告缓存失败 $adUnitId');
   }
 
   /// mob显示失败
   void _mobileAdShowFailedScreenContent(Ad ad, AdError error) {
-    final code = error.code.toString();
+    final code = error.toString();
     callback.showFailed(ad.adUnitId, code, AdSdkPlatform.admob);
   }
 
